@@ -46,8 +46,7 @@
   },
   "pre-commit": [
     "pretty-quick-commit",
-    "test",
-    "lint"
+    "test"
   ],
   "keywords": [
     "accordion",
