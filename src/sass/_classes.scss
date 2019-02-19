@@ -1,0 +1,240 @@
+/**
+ * @name    SAccordionComponent
+ * Provide some clean accordion with colors support
+ *
+ * @example   html
+ * <dl class="accordion">
+ *   <dt class="accordion__title">
+ *     <a href="#accordion-1" is="s-activate" group="accordion-1">
+ *       Accordion title #1
+ *       <div class="pull-right">
+ *         <s-icon class="accordion__close" driver="fontawesome" icon="fas fa-minus"></s-icon>
+ *         <s-icon class="accordion__open" driver="fontawesome" icon="fas fa-plus"></s-icon>
+ *       </div>
+ *     </a>
+ *   </dt>
+ *   <dd class="accordion__content" id="accordion-1">
+ *     Accordion content #1
+ *   </dd>
+ *   <dt class="accordion__title">
+ *     <a href="#accordion-2" is="s-activate" group="accordion-1">
+ *       Accordion title #2
+ *       <div class="pull-right">
+ *         <s-icon class="accordion__close" driver="fontawesome" icon="fas fa-minus"></s-icon>
+ *         <s-icon class="accordion__open" driver="fontawesome" icon="fas fa-plus"></s-icon>
+ *       </div>
+ *     </a>
+ *   </dt>
+ *   <dd class="accordion__content" id="accordion-2">
+ *     Accordion content #2
+ *   </dd>
+ *   <dt class="accordion__title">
+ *     <a href="#accordion-3" is="s-activate" group="accordion-1">
+ *       Accordion title #3
+ *       <div class="pull-right">
+ *         <s-icon class="accordion__close" driver="fontawesome" icon="fas fa-minus"></s-icon>
+ *         <s-icon class="accordion__open" driver="fontawesome" icon="fas fa-plus"></s-icon>
+ *       </div>
+ *     </a>
+ *   </dt>
+ *   <dd class="accordion__content" id="accordion-3">
+ *     Accordion content #3
+ *   </dd>
+ * </dl>
+ *
+ * @author    Olivier Bossel <olivier.bossel@gmail.com> (https://olivierbossel.com)
+ */
+
+/**
+ * Print out the bare and style component css
+ * Generated classes:
+ * - `.accordion`
+ * - `.accordion--{color}`
+ * - `.accordion__title`
+ * - `.accordion__title a`
+ * - `.accordion__title a.active`
+ * - `.accordion__content`
+ * - `.accordion__content.active`
+ * - `.accordion__close`
+ * - `.accordion__open`
+ * @param 	{List<Color>} 		[$color=default primary secondary] 		The colors to generate
+ */
+@mixin s-accordion-classes(
+  $colors: default primary secondary
+) {
+  @include s-accordion-classes-bare();
+  @include s-accordion-classes-style($colors);
+}
+
+/**
+ * Print out the bare component css
+ * Generated classes:
+ * - `.accordion`
+ * - `.accordion__title`
+ * - `.accordion__title a`
+ * - `.accordion__title a.active`
+ * - `.accordion__content`
+ * - `.accordion__content.active`
+ * - `.accordion__close`
+ * - `.accordion__open`
+ */
+@mixin s-accordion-classes-bare() {
+  @include s-component('accordion') {
+    .#{s-component()} {
+      border-radius: s-lnf(border-radius);
+      display: block;
+    }
+    .#{s-component()}__title {
+      a {
+        border-radius: s-lnf(border-radius);
+        padding: s-lnf(padding-horizontal) s-lnf(padding-vertical);
+        display: block;
+        text-decoration: none;
+
+        .#{s-component()}__open {
+          display: inline-block;
+        }
+        .#{s-component()}__close {
+          display: none;
+        }
+
+        &.active {
+          .#{s-component()}__open {
+            display: none;
+          }
+          .#{s-component()}__close {
+            display: inline-block;
+          }
+        }
+      }
+    }
+    .#{s-component()}__content {
+      padding: s-space(default);
+      overflow: hidden;
+      @include s-transition(default);
+      height: 0px;
+      &.active {
+        height: auto;
+      }
+      &:not(.active) {
+        height: 0px !important;
+        padding: 0 s-space(default) !important;
+      }
+    }
+  }
+}
+
+/**
+ * Print out the style component css
+ * Generated classes:
+ * - `.accordion`
+ * - `.accordion--{color}`
+ * - `.accordion__title`
+ * - `.accordion__title a`
+ * - `.accordion__title a.active`
+ * - `.accordion__content`
+ * - `.accordion__content.active`
+ * - `.accordion__close`
+ * - `.accordion__open`
+ * @param 	{List<Color>} 		[$color=default primary secondary] 		The colors to generate
+ */
+@mixin s-accordion-classes-style(
+  $colors: default primary secondary
+) {
+  @include s-component('accordion') {
+    @each $color in $colors {
+      $sel : ".#{s-component()}--#{$color}";
+
+      @if $color == default {
+        $sel : ".#{s-component()}";
+      }
+
+      #{$sel} {
+        border: 1px solid s-color($color, -lightness 90);
+
+        .#{s-component()}__title {
+          &:not(:first-child) {
+            margin-top: -1px;
+          }
+          &:last-child a {
+            border-bottom: none !important;
+          }
+          &:first-child a {
+            border-top: none !important;
+          }
+
+          a {
+            color: s-color($color);
+            border: 1px solid rgba(0,0,0,0);
+            border-left: none !important;
+            border-right: none !important;
+            @include s-transition(fast);
+
+            &:hover,
+            &.active {
+              border: 1px solid s-color($color, -lightness 90);
+              background-color: s-color($color, -lightness 95);
+            }
+            &:active {
+              background-color: s-color($color, -lightness 90);
+            }
+          }
+        }
+
+        .#{s-component()}__content {
+          border-bottom: 0px solid rgba(0,0,0,0);
+
+          &.active {
+            border-bottom: 1px solid s-color($color, -lightness 95);
+          }
+        }
+
+        // opaque
+        &.#{s-component()}--opaque {
+          .#{s-component()}__title {
+            a:hover,
+            a.active {
+              border-color: s-color($color);
+              background-color: s-color($color);
+              color: white;
+            }
+            a:active {
+              background-color: s-color($color, -darken 5%);
+              border-color: s-color($color, -darken 5%);
+            }
+          }
+        }
+
+        // filled
+        &.#{s-component()}--filled {
+          .#{s-component()}__title a.active {
+            background: s-color($color, -lightness 90);
+          }
+          .#{s-component()}__content {
+            background: s-color($color, -lightness 95);
+          }
+        }
+
+        // filled opaque
+        &.#{s-component()}--filled.#{s-component()}--opaque {
+          .#{s-component()}__title {
+            a.active {
+              background-color: s-color($color);
+              border-color: s-color($color);
+              color: white;
+            }
+            a:active {
+              background-color: s-color($color, -darken 5%);
+              border-color: s-color($color, -darken 5%);
+            }
+          }
+          .#{s-component()}__content {
+            background: s-color($color);
+            color: white;
+            border-color: s-color($color);
+          }
+        }
+      }
+    }
+  }
+}
